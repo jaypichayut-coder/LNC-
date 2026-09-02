@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="th" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LNC Tutor - ตรวจสอบสถานะการสมัครสอนพิเศษ</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Prompt -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Prompt', 'sans-serif'],
+                    },
+                    colors: {
+                        lnc: {
+                            pink: '#e11d48',
+                            magenta: '#db2777',
+                            softPink: '#fdf2f8',
+                            pastelPurple: '#f3e8ff',
+                            dark: '#18181b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: linear-gradient(135deg, #fff5f7 0%, #f5f3ff 50%, #f0f9ff 100%);
+        }
+        .cute-shadow {
+            box-shadow: 0 20px 40px -15px rgba(225, 29, 72, 0.12);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+        /* Cute background blob animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(3deg); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+            animation: float 7s ease-in-out infinite 2s;
+        }
+    </style>
+</head>
+<body class="min-h-full flex flex-col justify-between text-gray-800 relative overflow-x-hidden selection:bg-pink-100 selection:text-pink-600">
+
+    <!-- Decorative Animated Background Objects -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+        <div class="absolute -top-20 -left-20 w-80 h-80 bg-pink-200/50 rounded-full blur-3xl animate-float"></div>
+        <div class="absolute top-1/2 -right-20 w-96 h-96 bg-purple-200/50 rounded-full blur-3xl animate-float-delayed"></div>
+        <div class="absolute -bottom-20 left-1/3 w-80 h-80 bg-sky-200/40 rounded-full blur-3xl animate-float"></div>
+    </div>
+
+    <!-- Header / Navbar -->
+    <header class="w-full bg-white/70 backdrop-blur-md border-b border-pink-100/60 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <!-- LNC Custom Logo -->
+                <div class="w-11 h-11 bg-white border border-gray-100 rounded-2xl flex items-center justify-center shadow-md p-1.5 hover:scale-105 transition-transform">
+                    <svg viewBox="0 0 100 100" class="w-full h-full">
+                        <!-- L shape -->
+                        <path d="M 20 15 L 20 50 L 35 50" stroke="#000000" stroke-width="9" stroke-linecap="square" fill="none" />
+                        <!-- N magenta slash -->
+                        <path d="M 32 47 L 50 75" stroke="#e11d48" stroke-width="9" stroke-linecap="round" fill="none" />
+                        <!-- N right line -->
+                        <path d="M 31 50 L 31 75 M 49 48 L 49 75" stroke="#000000" stroke-width="9" stroke-linecap="square" fill="none" />
+                        <!-- + symbol -->
+                        <path d="M 51 60 L 60 60 M 55.5 55.5 L 55.5 64.5" stroke="#e11d48" stroke-width="5" stroke-linecap="round" fill="none" />
+                        <!-- C shape -->
+                        <path d="M 78 48 C 65 42, 53 52, 55 67 C 57 80, 78 78, 78 70" stroke="#000000" stroke-width="9" stroke-linecap="round" fill="none" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-snug tracking-tight text-gray-900 flex items-center gap-1.5">
+                        LNC TUTOR <span class="text-xs bg-pink-100 text-pink-600 font-semibold px-2 py-0.5 rounded-full">Recruitment</span>
+                    </h1>
+                    <p class="text-xs text-gray-500 font-normal">ระบบตรวจสอบสถานะการสมัครติวเตอร์ / ผู้สอนพิเศษ</p>
+                </div>
+            </div>
+
+            <div class="hidden sm:flex items-center gap-2 text-xs font-medium text-purple-700 bg-purple-50 px-3 py-1.5 rounded-full border border-purple-100">
+                <i class="fa-solid fa-graduation-cap"></i> สมัครสอนพิเศษ 2026
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-2xl mx-auto px-4 py-8 sm:py-12 w-full flex-grow flex flex-col justify-center">
+
+        <!-- Welcome Cute Banner -->
+        <div class="text-center mb-8 space-y-3">
+            <div class="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-md shadow-pink-500/20">
+                <i class="fa-solid fa-sparkles"></i> LNC Status Verification
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+                เช็กผลการสมัครเป็นติวเตอร์ LNC ✏️
+            </h2>
+            <p class="text-xs sm:text-sm text-gray-600 max-w-md mx-auto leading-relaxed">
+                พิมพ์ค้นหารายชื่อของคุณ แล้วยืนยันตัวตนด้วย <span class="font-semibold text-pink-600">รหัสวันเกิด</span> เพื่อดูผลการคัดเลือกคอลัมน์ X ได้เลยค่ะ
+            </p>
+        </div>
+
+        <!-- Search Card -->
+        <div class="glass-card rounded-3xl p-6 sm:p-8 cute-shadow space-y-6 relative border border-white">
+            
+            <div class="space-y-2">
+                <label for="searchInput" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider flex items-center justify-between">
+                    <span><i class="fa-solid fa-magnifying-glass text-pink-500 mr-1.5"></i> ค้นหาชื่อ-นามสกุลผู้สมัคร</span>
+                    <span class="text-[10px] text-gray-400 font-normal hidden sm:inline">คอลัมน์ B (กด Ctrl+F เพื่อค้นหาได้)</span>
+                </label>
+
+                <div class="relative">
+                    <input type="text" id="searchInput" placeholder="พิมพ์ชื่อ หรือนามสกุล เช่น สมหญิง เรียนดี..."
+                        oninput="handleSearchInput()"
+                        class="w-full pl-11 pr-24 py-3.5 bg-white/90 border-2 border-pink-100 rounded-2xl text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-pink-500 focus:ring-4 focus:ring-pink-100 transition-all shadow-sm">
+                    
+                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                        <i class="fa-solid fa-user-pen text-base text-pink-400"></i>
+                    </span>
+
+                    <button type="button" onclick="triggerSearch()" 
+                        class="absolute right-2 top-2 bottom-2 px-4 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-medium text-xs rounded-xl shadow-sm hover:shadow transition-all flex items-center gap-1.5 active:scale-95">
+                        <span>ค้นหา</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Auto-suggest dropdown -->
+                <div id="suggestBox" class="hidden absolute left-0 right-0 mt-2 bg-white/95 border border-pink-100 rounded-2xl shadow-xl z-30 max-h-56 overflow-y-auto divide-y divide-gray-50 text-xs">
+                </div>
+            </div>
+
+            <div class="pt-2 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-400">
+                <span><i class="fa-solid fa-shield-halved text-emerald-500 mr-1"></i> ระบบรักษาความปลอดภัยข้อมูลส่วนบุคคล</span>
+                <span>ฐานข้อมูล LNC Google Sheet</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- POPUP MODAL 1: DOB Verification Modal -->
+    <div id="dobModal" class="hidden fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-all">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl space-y-5 border border-pink-100 transform scale-95 opacity-0 transition-all duration-200" id="dobModalContent">
+            
+            <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-pink-100 text-pink-600 flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-base">ยืนยันรหัสวันเกิด</h3>
+                        <p class="text-xs text-pink-600 font-medium" id="modalCandidateName">-</p>
+                    </div>
+                </div>
+                <button onclick="closeDobModal()" class="w-8 h-8 rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 transition-colors flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <p class="text-xs text-gray-600 leading-relaxed">
+                    เพื่อความเป็นส่วนตัว กรุณากรอก <span class="font-semibold text-gray-800">วัน/เดือน/ปีเกิด</span> (คอลัมน์ E) ของคุณเพื่อปลดล็อกดูผลในคอลัมน์ X ค่ะ
+                </p>
+
+                <div>
+                    <label for="dobInput" class="block text-xs font-semibold text-gray-700 mb-1.5">
+                        รหัสวันเกิด (คอลัมน์ E) <span class="text-pink-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <input type="text" id="dobInput" placeholder="เช่น 15/08/2540 หรือ 1997-08-15"
+                            onkeypress="if(event.key==='Enter') verifyDOB()"
+                            class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-100 transition-all">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
+                            <i class="fa-solid fa-calendar-day text-sm"></i>
+                        </span>
+                    </div>
+                    <span class="text-[10px] text-gray-400 mt-1 block">ตัวอย่างการกรอก: 15/08/2540 หรือ 15082540</span>
+                </div>
+            </div>
+
+            <div id="modalError" class="hidden text-xs text-rose-600 bg-rose-50 border border-rose-200 rounded-xl p-3 flex items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation text-rose-500 flex-shrink-0"></i>
+                <span id="modalErrorMsg">รหัสวันเกิดไม่ถูกต้อง</span>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-2">
+                <button type="button" onclick="closeDobModal()" class="px-4 py-2.5 rounded-xl border border-gray-200 text-xs font-semibold text-gray-600 hover:bg-gray-50 transition-colors">
+                    ยกเลิก
+                </button>
+                <button type="button" id="btnVerify" onclick="verifyDOB()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white text-xs font-semibold shadow-md shadow-pink-500/20 flex items-center gap-2 transition-all">
+                    <span>ยืนยันและตรวจผล</span>
+                    <i class="fa-solid fa-check"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- POPUP MODAL 2: Result Status Modal -->
+    <div id="resultModal" class="hidden fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-all">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl space-y-6 border border-pink-100 text-center relative overflow-hidden transform scale-95 opacity-0 transition-all duration-200" id="resultModalContent">
+            
+            <div class="w-16 h-16 mx-auto rounded-3xl flex items-center justify-center text-3xl shadow-inner mb-2" id="statusBadgeIcon">
+                <i class="fa-solid fa-award"></i>
+            </div>
+
+            <div>
+                <span class="text-xs text-gray-400 uppercase tracking-widest font-semibold">ผลการสมัครติวเตอร์ LNC</span>
+                <h3 class="text-xl font-bold text-gray-900 mt-1" id="resultCandidateName">-</h3>
+            </div>
+
+            <div class="bg-gray-50 rounded-2xl p-5 border border-gray-100 space-y-2">
+                <div class="text-xs text-gray-500">สถานะปัจจุบัน (คอลัมน์ X)</div>
+                <div class="text-2xl font-extrabold tracking-tight py-1" id="statusTitle">
+                    -
+                </div>
+                <p class="text-xs text-gray-600 font-light leading-relaxed pt-1" id="statusDescription">
+                    -
+                </p>
+            </div>
+
+            <button onclick="closeResultModal()" class="w-full py-3 bg-gray-900 hover:bg-gray-800 text-white font-semibold text-xs rounded-xl transition-all shadow-md">
+                ตกลง / ปิดหน้าต่าง
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="w-full py-6 text-center text-xs text-gray-400 border-t border-gray-200/60 bg-white/40">
+        <p>© LNC Tutor Academic Recruitment • Powered by Google Apps Script & GitHub Pages</p>
+    </footer>
+
+    <script>
+        // -------------------------------------------------------------
+        // ** URL Web App Google Apps Script **
+        // วาง URL ที่ได้จากการ Deploy Google Apps Script ด้านล่างนี้
+        // -------------------------------------------------------------
+        const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyrQGeUceEWaoFOEcV1xRFF-YldvDp931X0V4ZpoiJ6i8BO24U9mk5wA7mVRiL_c107HA/exec";
+
+        let selectedName = "";
+        let searchTimeout = null;
+
+        // สไตล์และความหมายของสถานะคอลัมน์ X
+        const STATUS_MAP = {
+            "ผ่านสัมภาษณ์": {
+                color: "text-emerald-600 bg-emerald-50 border-emerald-200",
+                iconBg: "bg-emerald-100 text-emerald-600",
+                icon: "fa-solid fa-circle-check",
+                desc: "🎉 ยินดีด้วยค่ะ! คุณผ่านการสัมภาษณ์เป็นติวเตอร์ LNC เรียบร้อยแล้ว ทีมงานจะติดต่อกลับเพื่อแจ้งรายละเอียดงานสอนค่ะ"
+            },
+            "ไม่ผ่านสัมภาษณ์": {
+                color: "text-rose-600 bg-rose-50 border-rose-200",
+                iconBg: "bg-rose-100 text-rose-600",
+                icon: "fa-solid fa-heart-crack",
+                desc: "ขอบคุณที่ให้ความสนใจสมัครร่วมงานกับ LNC นะคะ ในรอบนี้ยังไม่ผ่านการสัมภาษณ์ หวังว่าจะได้ร่วมงานกันในโอกาสถัดไปค่ะ"
+            },
+            "รอเข้าสัมภาษณ์": {
+                color: "text-amber-600 bg-amber-50 border-amber-200",
+                iconBg: "bg-amber-100 text-amber-600",
+                icon: "fa-solid fa-hourglass-half",
+                desc: "⏳ อยู่ระหว่างรอเข้าสัมภาษณ์ กรุณเตรียมตัวและรอการติดต่อจากเจ้าหน้าที่ตามนัดหมายนะคะ"
+            },
+            "เลื่อนสัมภาษณ์": {
+                color: "text-orange-600 bg-orange-50 border-orange-200",
+                iconBg: "bg-orange-100 text-orange-600",
+                icon: "fa-solid fa-calendar-minus",
+                desc: "🗓️ มีการเลื่อนวัน/เวลาสัมภาษณ์ เจ้าหน้าที่จะติดต่อแจ้งกำหนดการสัมภาษณ์ใหม่อีกครั้งค่ะ"
+            },
+            "ติดต่อไม่ได้": {
+                color: "text-purple-600 bg-purple-50 border-purple-200",
+                iconBg: "bg-purple-100 text-purple-600",
+                icon: "fa-solid fa-phone-slash",
+                desc: "📱 ทีมงานไม่สามารถติดต่อคุณได้ในรอบก่อนหน้า กรุณาติดต่อกลับเจ้าหน้าที่ LNC ผ่านช่องทางหลักนะคะ"
+            },
+            "ไม่เข้าเงื่อนไข": {
+                color: "text-gray-600 bg-gray-100 border-gray-200",
+                iconBg: "bg-gray-200 text-gray-600",
+                icon: "fa-solid fa-circle-info",
+                desc: "ข้อมูลการสมัครยังไม่ตรงตามเงื่อนไขคุณสมบัติในรอบนี้ ขอบคุณที่ส่งใบสมัครเข้ามานะคะ"
+            },
+            "ส่งต่อ EZY": {
+                color: "text-blue-600 bg-blue-50 border-blue-200",
+                iconBg: "bg-blue-100 text-blue-600",
+                icon: "fa-solid fa-paper-plane",
+                desc: "📦 ส่งต่อข้อมูลการสมัครไปยังระบบ EZY เรียบร้อยแล้ว"
+            },
+            "ขอยกเลิกสัมภาษณ์": {
+                color: "text-pink-600 bg-pink-50 border-pink-200",
+                iconBg: "bg-pink-100 text-pink-600",
+                icon: "fa-solid fa-user-xmark",
+                desc: "บันทึกการยกเลิกสัมภาษณ์ตามคำร้องขอของผู้สมัครเรียบร้อยแล้วค่ะ"
+            },
+            "ปิดรับ": {
+                color: "text-slate-600 bg-slate-100 border-slate-300",
+                iconBg: "bg-slate-200 text-slate-700",
+                icon: "fa-solid fa-lock",
+                desc: "🔒 ตำแหน่งวิชาที่สมัครปิดรับสมัครในรอบนี้แล้ว"
+            },
+            "เก็บไว้เป็นตัวเลือก": {
+                color: "text-indigo-600 bg-indigo-50 border-indigo-200",
+                iconBg: "bg-indigo-100 text-indigo-600",
+                icon: "fa-solid fa-bookmark",
+                desc: "⭐️ ประวัติของคุณได้รับการจัดเก็บในระบบสำรอง หากมีคลาสสอนใหม่ตรงกัน ทีมงานจะติดต่อกลับเป็นอันดับแรกค่ะ"
+            },
+            "ได้งานแล้ว": {
+                color: "text-teal-600 bg-teal-50 border-teal-200",
+                iconBg: "bg-teal-100 text-teal-600",
+                icon: "fa-solid fa-briefcase",
+                desc: "✨ ยินดีด้วยค่ะ! ได้รับคลาสสอนเรียบร้อยแล้ว ขอให้มีความสุขกับการสอนใน LNC Tutor นะคะ"
+            }
+        };
+
+        function handleSearchInput() {
+            clearTimeout(searchTimeout);
+            const query = document.getElementById('searchInput').value.trim();
+            const suggestBox = document.getElementById('suggestBox');
+
+            if (query.length < 2) {
+                suggestBox.classList.add('hidden');
+                return;
+            }
+
+            searchTimeout = setTimeout(async () => {
+                try {
+                    const res = await fetch(`${GOOGLE_APP_SCRIPT_URL}?action=searchName&query=${encodeURIComponent(query)}`);
+                    const data = await res.json();
+
+                    if (data.status === 'success' && data.data.length > 0) {
+                        suggestBox.innerHTML = data.data.map(name => `
+                            <div onclick="selectCandidate('${name}')" class="px-4 py-3 hover:bg-pink-50 cursor-pointer flex items-center justify-between transition-colors">
+                                <span class="font-medium text-gray-800">${name}</span>
+                                <span class="text-[10px] bg-pink-100 text-pink-600 px-2 py-0.5 rounded-full">ยืนยันวันเกิดเพื่อดูผล</span>
+                            </div>
+                        `).join('');
+                        suggestBox.classList.remove('hidden');
+                    } else {
+                        suggestBox.innerHTML = `<div class="px-4 py-3 text-gray-400 text-center">ไม่พบรายชื่อผู้สมัครที่ตรงกัน</div>`;
+                        suggestBox.classList.remove('hidden');
+                    }
+                } catch (e) {
+                    console.error("Search error:", e);
+                }
+            }, 300);
+        }
+
+        function selectCandidate(name) {
+            selectedName = name;
+            document.getElementById('searchInput').value = name;
+            document.getElementById('suggestBox').classList.add('hidden');
+            openDobModal(name);
+        }
+
+        function triggerSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+            selectCandidate(query);
+        }
+
+        function openDobModal(name) {
+            selectedName = name;
+            document.getElementById('modalCandidateName').innerText = name;
+            document.getElementById('dobInput').value = '';
+            document.getElementById('modalError').classList.add('hidden');
+            
+            const modal = document.getElementById('dobModal');
+            const content = document.getElementById('dobModalContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+                document.getElementById('dobInput').focus();
+            }, 10);
+        }
+
+        function closeDobModal() {
+            const modal = document.getElementById('dobModal');
+            const content = document.getElementById('dobModalContent');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        async function verifyDOB() {
+            const dob = document.getElementById('dobInput').value.trim();
+            const errorBox = document.getElementById('modalError');
+            const errorMsg = document.getElementById('modalErrorMsg');
+            const btnVerify = document.getElementById('btnVerify');
+
+            if (!dob) {
+                errorMsg.innerText = "กรุณากรอกรหัสวันเกิด";
+                errorBox.classList.remove('hidden');
+                return;
+            }
+
+            btnVerify.disabled = true;
+            btnVerify.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> กำลังตรวจสอบ...`;
+            errorBox.classList.add('hidden');
+
+            try {
+                const res = await fetch(`${GOOGLE_APP_SCRIPT_URL}?action=verifyDOB&name=${encodeURIComponent(selectedName)}&dob=${encodeURIComponent(dob)}`);
+                const data = await res.json();
+
+                btnVerify.disabled = false;
+                btnVerify.innerHTML = `<span>ยืนยันและตรวจผล</span> <i class="fa-solid fa-check"></i>`;
+
+                if (data.status === 'success' && data.verified) {
+                    closeDobModal();
+                    setTimeout(() => {
+                        showResultModal(data.candidate);
+                    }, 250);
+                } else {
+                    errorMsg.innerText = data.message || "รหัสวันเกิดไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง";
+                    errorBox.classList.remove('hidden');
+                }
+            } catch (err) {
+                btnVerify.disabled = false;
+                btnVerify.innerHTML = `<span>ยืนยันและตรวจผล</span> <i class="fa-solid fa-check"></i>`;
+                errorMsg.innerText = "เกิดข้อผิดพลาดในการเชื่อมต่อระบบ";
+                errorBox.classList.remove('hidden');
+            }
+        }
+
+        function showResultModal(candidate) {
+            document.getElementById('resultCandidateName').innerText = candidate.name;
+
+            const statusText = candidate.status;
+            const config = STATUS_MAP[statusText] || {
+                color: "text-gray-700 bg-gray-50 border-gray-200",
+                iconBg: "bg-gray-100 text-gray-600",
+                icon: "fa-solid fa-clipboard-question",
+                desc: "โปรดติดตามประกาศเพิ่มเติมจากทาง LNC Tutor ค่ะ"
+            };
+
+            const statusTitle = document.getElementById('statusTitle');
+            statusTitle.innerText = statusText;
+            statusTitle.className = `text-2xl font-extrabold tracking-tight py-1 ${config.color.split(' ')[0]}`;
+
+            const badgeIcon = document.getElementById('statusBadgeIcon');
+            badgeIcon.className = `w-16 h-16 mx-auto rounded-3xl flex items-center justify-center text-3xl shadow-sm mb-2 ${config.iconBg}`;
+            badgeIcon.innerHTML = `<i class="${config.icon}"></i>`;
+
+            document.getElementById('statusDescription').innerText = config.desc;
+
+            const modal = document.getElementById('resultModal');
+            const content = document.getElementById('resultModalContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeResultModal() {
+            const modal = document.getElementById('resultModal');
+            const content = document.getElementById('resultModalContent');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const suggestBox = document.getElementById('suggestBox');
+            const searchInput = document.getElementById('searchInput');
+            if (!suggestBox.contains(e.target) && e.target !== searchInput) {
+                suggestBox.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
