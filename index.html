@@ -256,13 +256,19 @@
         // ** URL Web App Google Apps Script **
         // วาง URL ที่ได้จากการ Deploy Google Apps Script ด้านล่างนี้
         // -------------------------------------------------------------
-        const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzpVLSo9CR6_wANQ5wAwgYo_D_NZ0dfINVla348bJsZ8-PzUMhW_ZGEBjNFIydgQCCgiw/exec";
+        const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyppCmqzhTO8ZrzFPZ-itVxgJ8vHqHtFFlD7DqGOb-8Ln_sw63-Pw72qVQzT3MwT-JI/exec";
 
         let selectedName = "";
         let searchTimeout = null;
 
         // สไตล์และความหมายของสถานะคอลัมน์ X
         const STATUS_MAP = {
+            "รอประกาศผล": {
+                color: "text-sky-600 bg-sky-50 border-sky-200",
+                iconBg: "bg-sky-100 text-sky-600",
+                icon: "fa-solid fa-clock",
+                desc: "⏳ ข้อมูลการสมัครอยู่ระหว่างการประมวลผล/พิจารณา กรุณาเข้าตรวจสอบใหม่อีกครั้งในภายหลังค่ะ"
+            },
             "ผ่านสัมภาษณ์": {
                 color: "text-emerald-600 bg-emerald-50 border-emerald-200",
                 iconBg: "bg-emerald-100 text-emerald-600",
@@ -466,7 +472,7 @@
         function showResultModal(candidate) {
             document.getElementById('resultCandidateName').innerText = candidate.name;
 
-            const statusText = candidate.status;
+            const statusText = (candidate.status || "").trim();
             const config = STATUS_MAP[statusText] || {
                 color: "text-gray-700 bg-gray-50 border-gray-200",
                 iconBg: "bg-gray-100 text-gray-600",
