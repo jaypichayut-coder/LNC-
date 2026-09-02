@@ -123,11 +123,11 @@
             <div class="space-y-2">
                 <label for="searchInput" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider flex items-center justify-between">
                     <span><i class="fa-solid fa-magnifying-glass text-pink-500 mr-1.5"></i> ค้นหาชื่อ-นามสกุลผู้สมัคร</span>
-                    <span class="text-[10px] text-gray-400 font-normal hidden sm:inline">คอลัมน์ B (กด Ctrl+F เพื่อค้นหาได้)</span>
+                    <span class="text-[10px] text-gray-400 font-normal hidden sm:inline">ค้นหาได้ทั้งแบบพิมพ์คำนำหน้าหรือไม่พิมพ์ก็ได้</span>
                 </label>
 
                 <div class="relative">
-                    <input type="text" id="searchInput" placeholder="พิมพ์ชื่อ หรือนามสกุล เช่น สมหญิง เรียนดี..."
+                    <input type="text" id="searchInput" placeholder="พิมพ์ชื่อ หรือนามสกุล เช่น พรทิพย์, ผดุงวัฒน์..."
                         oninput="handleSearchInput()"
                         class="w-full pl-11 pr-24 py-3.5 bg-white/90 border-2 border-pink-100 rounded-2xl text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-pink-500 focus:ring-4 focus:ring-pink-100 transition-all shadow-sm">
                     
@@ -141,6 +141,12 @@
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
                 </div>
+
+                <!-- Search Hint -->
+                <p class="text-[11px] text-gray-500 pt-1 flex items-center gap-1">
+                    <i class="fa-solid fa-lightbulb text-amber-400"></i>
+                    <span>เคล็ดลับ: ค้นหาได้โดยไม่ต้องพิมพ์คำนำหน้าชื่อ (เช่น พิมพ์ "พรทิพย์" เพื่อหา "นางสาว พรทิพย์ ศิริโชติ")</span>
+                </p>
 
                 <!-- Auto-suggest dropdown -->
                 <div id="suggestBox" class="hidden absolute left-0 right-0 mt-2 bg-white/95 border border-pink-100 rounded-2xl shadow-xl z-30 max-h-56 overflow-y-auto divide-y divide-gray-50 text-xs">
@@ -325,23 +331,43 @@
             }
         };
 
+        // ฟังก์ชั่นสำหรับลบคำนำหน้าชื่อ เพื่อการเปรียบเทียบคำค้นหาที่แม่นยำยิ่งขึ้น
+        function normalizeThaiName(str) {
+            if (!str) return '';
+            return str
+                .replace(/^(นางสาว|นาง|นาย|ด\.ช\.|ด\.ญ\.|คุณ|ดร\.|นายแพทย์|แพทย์หญิง|\s)+/g, '')
+                .replace(/\s+/g, '')
+                .toLowerCase();
+        }
+
         function handleSearchInput() {
             clearTimeout(searchTimeout);
-            const query = document.getElementById('searchInput').value.trim();
+            const rawQuery = document.getElementById('searchInput').value.trim();
             const suggestBox = document.getElementById('suggestBox');
 
-            if (query.length < 2) {
+            if (rawQuery.length < 2) {
                 suggestBox.classList.add('hidden');
                 return;
             }
 
             searchTimeout = setTimeout(async () => {
                 try {
-                    const res = await fetch(`${GOOGLE_APP_SCRIPT_URL}?action=searchName&query=${encodeURIComponent(query)}`);
+                    const cleanQuery = normalizeThaiName(rawQuery);
+                    // ส่งทั้งคำค้นปกติ และคำค้นที่ตัดคำนำหน้าออกแล้ว
+                    const res = await fetch(`${GOOGLE_APP_SCRIPT_URL}?action=searchName&query=${encodeURIComponent(rawQuery)}&cleanQuery=${encodeURIComponent(cleanQuery)}`);
                     const data = await res.json();
 
                     if (data.status === 'success' && data.data.length > 0) {
-                        suggestBox.innerHTML = data.data.map(name => `
+                        // จัดเรียงผลลัพธ์ให้ชื่อที่ตรงกับคำค้นมากที่สุดอยู่ด้านบน
+                        const sortedData = data.data.sort((a, b) => {
+                            const normA = normalizeThaiName(a);
+                            const normB = normalizeThaiName(b);
+                            if (normA.startsWith(cleanQuery)) return -1;
+                            if (normB.startsWith(cleanQuery)) return 1;
+                            return 0;
+                        });
+
+                        suggestBox.innerHTML = sortedData.map(name => `
                             <div onclick="selectCandidate('${name}')" class="px-4 py-3 hover:bg-pink-50 cursor-pointer flex items-center justify-between transition-colors">
                                 <span class="font-medium text-gray-800">${name}</span>
                                 <span class="text-[10px] bg-pink-100 text-pink-600 px-2 py-0.5 rounded-full">ยืนยันวันเกิดเพื่อดูผล</span>
